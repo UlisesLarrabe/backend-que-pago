@@ -47,9 +47,9 @@ router.post("/login", async (req, res) => {
 
 router.get("/getUser", async (req, res) => {
   try {
-    const token = req.headers.cookie.split("=")[1];
-    if (!token) return res.status(401).json({ message: "Unauthorized" });
-    const user = await userManager.getUser(token);
+    const cookie = req.signedCookies.access_token;
+    if (!cookie) return res.status(401).json({ message: "Unauthorized" });
+    const user = await userManager.getUser(cookie);
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message, status: "error" });
