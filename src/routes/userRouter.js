@@ -32,10 +32,10 @@ router.post("/login", async (req, res) => {
     const response = await userManager.loginUser(user);
     res
       .cookie("access_token", response.token, {
-        signed: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
         sameSite: "none",
+        signed: true,
       })
       .status(200)
       .json(response);
@@ -45,9 +45,11 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/getUser", async (req, res) => {
+  console.log(req);
+
   try {
     const cookie = req.cookies.access_token;
-    if (!cookie) return res.status(401).json({ message: "Unauthorized" });
+    if (!cookie) return res.status(401).json({ message: req });
     const user = await userManager.getUser(cookie);
     res.status(200).json(user);
   } catch (error) {
