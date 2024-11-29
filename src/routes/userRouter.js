@@ -49,7 +49,7 @@ router.get("/getUser", async (req, res) => {
 
   try {
     const cookie = req.cookies.access_token;
-    if (!cookie) return res.status(401).json({ message: req });
+    if (!cookie) return res.status(401).json({ message: req.cookies });
     const user = await userManager.getUser(cookie);
     res.status(200).json(user);
   } catch (error) {
