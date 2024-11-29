@@ -10,7 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: process.env.URL_WEB ? process.env.URL_WEB : process.env.ENV_SOURCE,
+    origin:
+      process.env.ENV !== "dev" ? process.env.URL_WEB : process.env.ENV_SOURCE,
     credentials: true,
   })
 );
