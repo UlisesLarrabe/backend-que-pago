@@ -45,11 +45,9 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/getUser", async (req, res) => {
-  console.log(req);
-
   try {
     const cookie = req.signedCookies.access_token;
-    if (!cookie) return res.status(401).json({ message: req.cookies });
+    if (!cookie) return res.status(401).json({ message: req.headers });
     const user = await userManager.getUser(cookie);
     res.status(200).json(user);
   } catch (error) {
