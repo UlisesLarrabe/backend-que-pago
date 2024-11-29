@@ -36,7 +36,6 @@ router.post("/login", async (req, res) => {
         maxAge: 1000 * 60 * 60 * 24 * 7,
         httpOnly: true,
         sameSite: "none",
-        secure: process.env.NODE_ENV === "development" ? false : true,
       })
       .status(200)
       .json(response);
@@ -47,7 +46,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/getUser", async (req, res) => {
   try {
-    const cookie = req.signedCookies.access_token;
+    const cookie = req.cookies.access_token;
     if (!cookie) return res.status(401).json({ message: "Unauthorized" });
     const user = await userManager.getUser(cookie);
     res.status(200).json(user);
