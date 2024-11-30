@@ -35,8 +35,9 @@ router.post("/login", async (req, res) => {
         signed: true,
         httpOnly: true,
         maxAge: 1000 * 60 * 60 * 24 * 7,
-        sameSite: "none",
         path: "/",
+        sameSite: process.env.ENV === "env" ? "lax" : "none",
+        secure: process.env.ENV === "env" ? false : true,
       })
       .status(200)
       .json(response);
@@ -46,8 +47,6 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/getUser", async (req, res) => {
-  console.log(req);
-
   try {
     const cookie = req.signedCookies.access_token;
     if (!cookie) return res.status(401).json({ message: req.headers });
@@ -56,22 +55,6 @@ router.get("/getUser", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message, status: "error" });
   }
-});
-
-router.get("/test", (req, res) => {
-  res
-    .cookie("test", "a", {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      sameSite: "lax",
-      signed: true,
-    })
-    .status(200)
-    .json("Done");
-});
-
-router.get("/test/2", (req, res) => {
-  const cookie = req.signedCookies.test;
-  res.status(200).json(cookie);
 });
 
 router.get("/", isLogged, async (req, res) => {
