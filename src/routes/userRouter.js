@@ -7,7 +7,7 @@ const userManager = new UserManager();
 const subsManager = new SubsManager();
 
 const isLogged = (req, res, next) => {
-  const token = req.signedCookies.access_token;
+  const token = req.headers.authorization;
   if (!token) {
     return res.status(401).json({ message: "Unauthorized" });
   }
@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
 
 router.get("/getUser", async (req, res) => {
   try {
-    const cookie = req.signedCookies.access_token;
+    const cookie = req.headers.authorization;
     if (!cookie) return res.status(401).json({ message: req.headers });
     const user = await userManager.getUser(cookie);
     res.status(200).json(user);
@@ -51,17 +51,8 @@ router.post("/loginUser", async (req, res) => {
   try {
     const user = req.body;
     const response = await userManager.loginUser(user);
-    res
-      .cookie("access_token", response.token, {
-        signed: true,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60 * 24 * 7,
-        path: "/",
-        sameSite: process.env.ENV === "env" ? "lax" : "none",
-        secure: process.env.ENV === "env" ? false : true,
-      })
-      .status(200)
-      .json(response);
+
+    res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ message: error.message, status: "error" });
   }

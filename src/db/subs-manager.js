@@ -40,8 +40,10 @@ export default class SubsManager {
       if (!response) {
         throw new Error("Error adding sub");
       }
+      const newSub = await SubsModel.findById(id, { subs: { $slice: -1 } });
       return {
         message: "Sub added successfully",
+        sub: newSub.subs[0],
       };
     } catch (error) {
       throw error;
@@ -66,6 +68,7 @@ export default class SubsManager {
 
       return {
         message: "Sub updated successfully",
+        sub,
       };
     } catch (error) {
       throw error;
@@ -100,8 +103,10 @@ export default class SubsManager {
       }
       list.subs.forEach((sub) => (sub.isPaid = false));
       await SubsModel.findByIdAndUpdate(id, list);
+
       return {
         message: "SubList updated successfully",
+        subs: list.subs,
       };
     } catch (error) {
       throw error;
